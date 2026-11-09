@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="UltraPC DIP HOSON serial-level stock reconciliation. Import purchases and warehouse stock, match serial numbers, and export verified remaining stock.">
+  <meta name="theme-color" content="#0b3b8f">
+  <title>UltraPC | DIP HOSON Stock Tracker</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.3 2.3 4.7-5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h10v8H7z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></symbol>
+    <symbol id="i-package-check" viewBox="0 0 24 24"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/><path d="m15.5 15.5 1.5 1.5 3-3"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="brand-mark-u">U</span>
+          <span class="brand-mark-slash"></span>
+        </div>
+        <div class="brand-copy">
+          <strong>Ultra<span>PC</span></strong>
+          <small>Supplier stock</small>
+        </div>
+      </div>
+
+      <nav class="nav-list">
+        <a class="nav-link is-active" href="#overview" data-nav><svg class="icon"><use href="#i-grid"/></svg><span>Dashboard</span></a>
+        <a class="nav-link" href="#sources" data-nav><svg class="icon"><use href="#i-upload"/></svg><span>Data sources</span></a>
+        <a class="nav-link" href="#reconciliation" data-nav><svg class="icon"><use href="#i-layers"/></svg><span>Reconciliation</span></a>
+        <a class="nav-link" href="#serial-review" data-nav><svg class="icon"><use href="#i-alert"/></svg><span>Serial review</span><span class="nav-badge hidden" id="navUnverifiedBadge">0</span></a>
+      </nav>
+
+      <div class="sidebar-guard">
+        <div class="sidebar-guard-icon"><svg class="icon"><use href="#i-shield"/></svg></div>
+        <h4>DIP HOSON only</h4>
+        <p>Only serials traced to DIP HOSON purchases can count as remaining. Other suppliers are never added.</p>
+      </div>
+
+      <div class="sidebar-footer">
+        <span>UltraPC</span>
+        <span>v1.0 · Local processing</span>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+          <svg class="icon"><use href="#i-menu"/></svg>
+        </button>
+        <div class="topbar-title">
+          <span>Inventory control</span>
+          <strong>Supplier stock tracker</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="date-chip" id="todayChip"></span>
+          <button class="btn btn-secondary" id="topResetBtn" type="button">
+            <svg class="icon"><use href="#i-refresh"/></svg><span>Reset</span>
+          </button>
+          <button class="btn btn-primary" id="topExportBtn" type="button" disabled>
+            <svg class="icon"><use href="#i-download"/></svg><span>Export results</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="hero" id="overview">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="pulse-dot"></span> Serial-level reconciliation</span>
+            <h1>Know exactly what's left from <span>DIP HOSON.</span></h1>
+            <p>Import supplier purchases and current warehouse stock. UltraPC matches serial numbers only — never another supplier's stock and never an estimated quantity.</p>
+            <div class="hero-badges">
+              <span><svg class="icon"><use href="#i-shield"/></svg>DIP HOSON only</span>
+              <span><svg class="icon"><use href="#i-scan"/></svg>Exact serial matches</span>
+              <span><svg class="icon"><use href="#i-lock"/></svg>Stays in your browser</span>
+            </div>
+          </div>
+          <div class="hero-visual" aria-hidden="true">
+            <div class="flow-card">
+              <span class="flow-icon blue"><svg class="icon"><use href="#i-file"/></svg></span>
+              <div><small>DIP HOSON purchased</small><strong id="heroPurchased">—</strong></div>
+            </div>
+            <div class="flow-connector"><span></span><span></span><span></span></div>
+            <div class="flow-card">
+              <span class="flow-icon orange"><svg class="icon"><use href="#i-box"/></svg></span>
+              <div><small>Warehouse serials</small><strong id="heroStock">—</strong></div>
+            </div>
+            <div class="flow-result">
+              <span class="flow-result-icon"><svg class="icon"><use href="#i-check"/></svg></span>
+              <div><small>Exact matches remaining</small><strong id="heroMatched">—</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Step 01</span>
+              <h2>Import data sources</h2>
+            </div>
+            <div class="section-heading-actions">
+              <p>Excel files are read locally and are never uploaded.</p>
+              <button class="link-btn" id="demoBtn" type="button"><svg class="icon"><use href="#i-spark"/></svg>Load demo data</button>
+            </div>
+          </div>
+
+          <div class="import-grid">
+            <article class="import-card import-purchase" id="purchaseCard">
+              <div class="import-head">
+                <div class="source-icon blue"><svg class="icon"><use href="#i-file"/></svg></div>
+                <div class="import-heading">
+                  <h3>DIP HOSON purchases</h3>
+                  <p>One row per serialized unit</p>
+                </div>
+                <span class="source-tag blue">Required</span>
+              </div>
+
+              <div class="dropzone" id="purchaseDropzone" role="button" tabindex="0" aria-label="Import DIP HOSON purchases Excel file">
+                <input type="file" id="purchaseInput" accept=".xlsx,.xls,.xlsm,.csv,.ods" hidden>
+                <div class="dropzone-icon"><svg class="icon"><use href="#i-upload"/></svg></div>
+                <strong>Drop purchase Excel here</strong>
+                <span>or <b>browse files</b> · .xlsx, .xls, .csv</span>
+              </div>
+
+              <div class="file-summary hidden" id="purchaseSummary">
+                <div class="file-icon blue"><svg class="icon"><use href="#i-file"/></svg></div>
+                <div class="file-copy">
+                  <strong id="purchaseFileName">—</strong>
+                  <span id="purchaseFileMeta">—</span>
+                </div>
+                <div class="file-actions">
+                  <button class="mini-btn" id="purchaseReplaceBtn" type="button">Replace</button>
+                  <button class="icon-btn danger" id="purchaseRemoveBtn" type="button" aria-label="Remove purchase file"><svg class="icon"><use href="#i-trash"/></svg></button>
+                </div>
+              </div>
+
+              <div class="meta-row" id="purchaseMeta"></div>
+              <div class="import-foot">
+                <span><svg class="icon"><use href="#i-shield"/></svg>Supplier column checked when present</span>
+                <button class="link-btn small" id="purchaseTemplateBtn" type="button">Download template</button>
+              </div>
+              <div class="card-loading hidden" id="purchaseLoading"><span class="spinner"></span><span>Reading workbook…</span></div>
+            </article>
+
+            <article class="import-card import-stock" id="stockCard">
+              <div class="import-head">
+                <div class="source-icon orange"><svg class="icon"><use href="#i-box"/></svg></div>
+                <div class="import-heading">
+                  <h3>Current warehouse stock</h3>
+                  <p>Serialized units in the warehouse</p>
+                </div>
+                <span class="source-tag orange">Required</span>
+              </div>
+
+              <div class="dropzone" id="stockDropzone" role="button" tabindex="0" aria-label="Import current warehouse stock Excel file">
+                <input type="file" id="stockInput" accept=".xlsx,.xls,.xlsm,.csv,.ods" hidden>
+                <div class="dropzone-icon"><svg class="icon"><use href="#i-upload"/></svg></div>
+                <strong>Drop warehouse stock here</strong>
+                <span>or <b>browse files</b> · .xlsx, .xls, .csv</span>
+              </div>
+
+              <div class="file-summary hidden" id="stockSummary">
+                <div class="file-icon orange"><svg class="icon"><use href="#i-box"/></svg></div>
+                <div class="file-copy">
+                  <strong id="stockFileName">—</strong>
+                  <span id="stockFileMeta">—</span>
+                </div>
+                <div class="file-actions">
+                  <button class="mini-btn" id="stockReplaceBtn" type="button">Replace</button>
+                  <button class="icon-btn danger" id="stockRemoveBtn" type="button" aria-label="Remove warehouse stock file"><svg class="icon"><use href="#i-trash"/></svg></button>
+                </div>
+              </div>
+
+              <div class="meta-row" id="stockMeta"></div>
+              <div class="import-foot">
+                <span><svg class="icon"><use href="#i-shield"/></svg>Conflicting supplier rows are never counted</span>
+                <button class="link-btn small" id="stockTemplateBtn" type="button">Download template</button>
+              </div>
+              <div class="card-loading hidden" id="stockLoading"><span class="spinner"></span><span>Reading workbook…</span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Reconciliation summary">
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon blue"><svg class="icon"><use href="#i-file"/></svg></span><span class="stat-label">DIP HOSON purchased</span></div>
+            <div class="stat-value" id="statPurchased">0</div>
+            <div class="stat-sub" id="statPurchasedSub">Unique purchase serials</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon slate"><svg class="icon"><use href="#i-box"/></svg></span><span class="stat-label">Warehouse stock</span></div>
+            <div class="stat-value" id="statStock">0</div>
+            <div class="stat-sub" id="statStockSub">Valid serials in stock file</div>
+          </article>
+          <article class="stat-card stat-highlight">
+            <div class="stat-top"><span class="stat-icon orange"><svg class="icon"><use href="#i-package-check"/></svg></span><span class="stat-label">Remaining DIP HOSON</span></div>
+            <div class="stat-value orange" id="statRemaining">0</div>
+            <div class="stat-sub" id="statRemainingSub">Exact serial matches only</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon green"><svg class="icon"><use href="#i-check"/></svg></span><span class="stat-label">Match rate</span></div>
+            <div class="stat-value" id="statRate">—</div>
+            <div class="mini-track"><span id="statRateBar"></span></div>
+            <div class="stat-sub" id="statRateSub">Remaining ÷ purchased</div>
+          </article>
+          <article class="stat-card" id="unverifiedStatCard">
+            <div class="stat-top"><span class="stat-icon amber"><svg class="icon"><use href="#i-alert"/></svg></span><span class="stat-label">Unverified serials</span></div>
+            <div class="stat-value" id="statUnverified">0</div>
+            <div class="stat-sub" id="statUnverifiedSub">Excluded from all counts</div>
+          </article>
+        </section>
+
+        <section class="panel" id="reconciliation">
+          <div class="panel-head">
+            <div class="panel-heading">
+              <div class="panel-title-row">
+                <h2>DIP HOSON reconciliation</h2>
+                <span class="pill" id="resultCount">0 products</span>
+              </div>
+              <p>Remaining stock is the count of exact serial matches only.</p>
+            </div>
+            <div class="table-tools">
+              <label class="search-box">
+                <svg class="icon"><use href="#i-search"/></svg>
+                <input type="search" id="productSearch" placeholder="Search product or serial…" autocomplete="off">
+              </label>
+              <label class="select-wrap">
+                <select id="statusFilter" aria-label="Filter by serial status">
+                  <option value="all">All statuses</option>
+                  <option value="in-stock">In stock</option>
+                  <option value="sold-out">Sold out</option>
+                  <option value="unverified">Unverified</option>
+                  <option value="awaiting-stock">Awaiting stock</option>
+                </select>
+                <svg class="icon"><use href="#i-chevron-down"/></svg>
+              </label>
+              <label class="select-wrap">
+                <select id="sortSelect" aria-label="Sort products">
+                  <option value="remaining-desc">Most remaining</option>
+                  <option value="product-asc">Product A–Z</option>
+                  <option value="purchased-desc">Most purchased</option>
+                  <option value="current-desc">Most current stock</option>
+                  <option value="match-desc">Best match rate</option>
+                </select>
+                <svg class="icon"><use href="#i-chevron-down"/></svg>
+              </label>
+              <button class="btn btn-primary btn-compact" id="tableExportBtn" type="button" disabled>
+                <svg class="icon"><use href="#i-download"/></svg><span>Export</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table" id="resultsTable">
+              <thead>
+                <tr>
+                  <th scope="col">Product Name</th>
+                  <th scope="col" class="num">Purchased Qty</th>
+                  <th scope="col" class="num">Current Stock</th>
+                  <th scope="col" class="num">Remaining DIP HOSON</th>
+                  <th scope="col">Matching Serial Numbers</th>
+                  <th scope="col">Serial Status</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+            <div class="empty-state" id="resultsEmpty">
+              <span class="empty-icon"><svg class="icon"><use href="#i-layers"/></svg></span>
+              <strong>No reconciliation yet</strong>
+              <p>Import DIP HOSON purchases and warehouse stock to calculate verified remaining stock.</p>
+            </div>
+          </div>
+
+          <div class="table-footer">
+            <span id="paginationInfo"></span>
+            <div class="pagination" id="pagination"></div>
+          </div>
+        </section>
+
+        <section class="panel review-panel" id="serial-review">
+          <div class="panel-head">
+            <div class="panel-heading">
+              <div class="panel-title-row">
+                <h2>Serial review</h2>
+                <span class="pill orange" id="unverifiedCountPill">0 unverified</span>
+              </div>
+              <p>Missing, invalid, duplicate, or conflicting serials are excluded from every quantity.</p>
+            </div>
+            <div class="table-tools">
+              <label class="search-box">
+                <svg class="icon"><use href="#i-search"/></svg>
+                <input type="search" id="reviewSearch" placeholder="Search serial or reason…" autocomplete="off">
+              </label>
+              <label class="select-wrap">
+                <select id="reviewSourceFilter" aria-label="Filter unverified serials by source">
+                  <option value="all">All sources</option>
+                  <option value="purchase">DIP HOSON purchases</option>
+                  <option value="stock">Warehouse stock</option>
+                  <option value="matching">Match conflicts</option>
+                </select>
+                <svg class="icon"><use href="#i-chevron-down"/></svg>
+              </label>
+            </div>
+          </div>
+
+          <div class="guard-banner" id="guardBanner">
+            <span class="guard-banner-icon"><svg class="icon"><use href="#i-shield"/></svg></span>
+            <div><strong>Supplier guard active.</strong> Only serials from DIP HOSON purchases are eligible for remaining stock.</div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table review-table" id="reviewTable">
+              <thead>
+                <tr>
+                  <th scope="col">Source</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Serial Number</th>
+                  <th scope="col">Reason</th>
+                  <th scope="col" class="row-col">Row</th>
+                </tr>
+              </thead>
+              <tbody id="reviewBody"></tbody>
+            </table>
+            <div class="empty-state success" id="reviewEmpty">
+              <span class="empty-icon green"><svg class="icon"><use href="#i-check"/></svg></span>
+              <strong>No unverified serials</strong>
+              <p>Every counted unit is backed by a valid serial match.</p>
+            </div>
+          </div>
+          <div class="review-footer" id="reviewFooter"></div>
+        </section>
+
+        <footer class="app-footer">
+          <span>UltraPC · DIP HOSON Stock Tracker</span>
+          <span>Serial matching only · No quantity guessing · Data stays on this device</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <dialog class="modal" id="detailsDialog" aria-labelledby="detailsTitle">
+    <div class="modal-body" id="detailsContent"></div>
+  </dialog>
+
+  <dialog class="modal modal-sm" id="confirmDialog" aria-labelledby="confirmTitle">
+    <div class="modal-body">
+      <div class="confirm-icon" id="confirmIcon"><svg class="icon"><use href="#i-alert"/></svg></div>
+      <h2 id="confirmTitle">Clear all data?</h2>
+      <p id="confirmMessage">This will remove both imported files and all reconciliation results.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" id="confirmCancelBtn" type="button">Cancel</button>
+        <button class="btn btn-danger" id="confirmActionBtn" type="button">Clear data</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+  <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
